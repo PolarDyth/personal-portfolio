@@ -20,6 +20,7 @@ const limiter = rateLimit({
 app.use(cors({
   origin: process.env.DOMAIN || "http://localhost:5173", // Replace with your actual domain
   optionsSuccessStatus: 200,
+  credentials: true,
 }));
 app.use(express.json());
 app.use(helmet());
