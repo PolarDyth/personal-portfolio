@@ -19,7 +19,7 @@ interface SimpleProject {
 
 export default function ProjectCard(props: SimpleProject) {
   return (
-    <div className="bg-card rounded-xl overflow-hidden flex flex-col group hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2 animate-fade-in h-[440px]" style={{ animationDelay: `${props.key * 200}ms` }}>
+    <div className="bg-card rounded-xl overflow-hidden flex flex-col group hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2 animate-fade-in h-[440px]">
       <div key={props.key} className="relative h-[240px]">
         <img
           src={props.image.src}
@@ -46,7 +46,7 @@ export default function ProjectCard(props: SimpleProject) {
       </div>
       <div className="flex-1 p-6 flex flex-col">
         <h3 className="text-xl font-bold mb-2">
-          <Link to={"/project/" + props.slug} className="hover:text-primary group/link transition-colors inline-flex items-center">
+          <Link to={"/projects/" + props.slug} className="hover:text-primary group/link transition-colors inline-flex items-center">
             {props.title}
             <ArrowRight
               size={16}
