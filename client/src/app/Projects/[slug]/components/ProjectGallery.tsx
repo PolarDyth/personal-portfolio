@@ -44,7 +44,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
   }, [api]);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
+    <section className="overflow-hidden rounded-xl border border-border">
       <Carousel setApi={setApi}>
         <CarouselContent>
           {galleryImages.map((image, index) => (
@@ -90,6 +90,6 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
           ))}
         </div>
       </Carousel>
-    </div>
+    </section>
   );
 }

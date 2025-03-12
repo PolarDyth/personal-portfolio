@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import pool from "../config/db.config";
 import { z } from "zod";
 import { RowDataPacket } from "mysql2/promise";
+import Project from "../models/Projects";
 
 interface ProjectRow extends RowDataPacket {
   id: number;
@@ -84,14 +85,15 @@ const projectSchema = z.object({
 
 export const getProjects = async (req: Request, res: Response) => {
   try {
-    const [projects] = await pool.query("SELECT * FROM projects");
+    const projects = await Project.findAll();
     res.json(projects);
   } catch (error) {
+    console.error("Error fetching all projects:", error);
     res.status(500).json({error: "Error fetching all projects"});
   }
 };
 
-export const createProject = async (req: Request, res: Response) => {
+export const createProject = async (req: Request, res: Response): Promise<void> => {
   const projectData = req.body;
   if (!projectData) {
     res.status(400).json({error: "Please provide project data"});
@@ -99,76 +101,127 @@ export const createProject = async (req: Request, res: Response) => {
   }
 
   try {
-
     const validatedData = projectSchema.parse(projectData);
+    
+    const newProject = await Project.create({
+      slug: validatedData.slug,
+      data: {
+        ...validatedData.data,
+        conditions: [], // Add appropriate default or actual values
+        path: "",       // Add appropriate default or actual values
+        value: ""       // Add appropriate default or actual values
+      }
+    });
 
-    const [result] = await pool.query("INSERT INTO projects (slug, data) VALUES (?, ?)", [validatedData.slug ,JSON.stringify(validatedData.data)]);
-    res.status(201).json({message: "Project created successfully ", projectId: (result as any).insertId});
+    res.status(201).json({
+      message: "Project created successfully",
+      projectId: newProject.id
+    });
   } catch (error) {
     console.error("Error creating project:", error);
+    
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        error: "Invalid project data",
+        details: error.errors
+      });
+      return;
+    }
+    
     res.status(500).json({error: "Error creating project"});
   }
 };
 
-export const updateProject = async (req: Request, res: Response) => {
+export const updateProject = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const projectData = req.body;
+  
   if (!id || !projectData) {
     res.status(400).json({error: "Project ID and data are required"})
     return;
   }
 
   try {
-
     const validatedData = projectSchema.parse(projectData);
+    
+    const project = await Project.findByPk(id);
+    
+    if (!project) {
+      res.status(404).json({error: "Project not found"});
+      return;
+    }
+    
+    await project.update({
+      slug: validatedData.slug,
+      data: {
+        ...validatedData.data,
+        conditions: [], // Add appropriate default or actual values
+        path: "",       // Add appropriate default or actual values
+        value: ""       // Add appropriate default or actual values
+      }
+    });
 
-    await pool.query("UPDATE projects SET data = ? WHERE id = ?", [JSON.stringify(validatedData), id]);
     res.json({message: "Project updated successfully"});
   } catch (error) {
+    console.error("Error updating project:", error);
+    
+    if (error instanceof z.ZodError) {
+        res.status(400).json({
+        error: "Invalid project data",
+        details: error.errors
+      });
+      return;
+    }
+    
     res.status(500).json({error: "Error updating project"});
   }
 };
 
-export const deleteProject = async (req: Request, res: Response) => {
+export const deleteProject = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
+  
   if (!id) {
     res.status(400).json({error: "Project ID is required"});
     return;
   }
 
   try {
-    await pool.query("DELETE FROM projects WHERE id = ?", [id]);
+    const project = await Project.findByPk(id);
+    
+    if (!project) {
+      res.status(404).json({error: "Project not found"});
+      return;
+    }
+    
+    await project.destroy();
     res.json({message: "Project deleted successfully"});
   } catch (error) {
+    console.error("Error deleting project:", error);
     res.status(500).json({error: "Error deleting project"});
   }
 };
 
 export const getProject = async (req: Request, res: Response) => {
   const { slug } = req.params;
+  
   if (!slug) {
     res.status(400).json({ error: "Project slug is required" });
     return;
   }
 
   try {
-    // Query the database, specifying that the result rows are ProjectRow[]
-    const [rows] = await pool.query<ProjectRow[]>(
-      "SELECT * FROM projects WHERE slug = ?",
-      [slug]
-    );
+    const project = await Project.findOne({
+      where: { slug }
+    });
 
-    if (rows.length === 0) {
+    if (!project) {
       res.status(404).json({ error: "Project not found" });
       return;
     }
 
-    // rows[0] is the first ProjectRow that matches
-    res.json(rows[0]);
-    return;
+    res.json(project);
   } catch (error) {
     console.error("Error fetching project:", error);
     res.status(500).json({ error: "Error fetching project" });
-    return;
   }
 };

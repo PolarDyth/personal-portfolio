@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import axios from 'axios';
 import { 
   Card, 
   CardContent, 
@@ -37,15 +38,16 @@ export default function AdminAuthWrapper({ children }: AdminAuthWrapperProps) {
     
     try {
       await login(username, password);
-      // The auth state will be updated by the hook
       setPassword(""); // Clear password from memory for security
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
       
-      if (err.response?.data?.error) {
-        setError(err.response.data.error);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || "Authentication failed");
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
-        setError("Login failed. Please try again.");
+        setError("An unexpected error occurred");
       }
     } finally {
       setIsSubmitting(false);
@@ -55,8 +57,12 @@ export default function AdminAuthWrapper({ children }: AdminAuthWrapperProps) {
   const handleLogout = async () => {
     try {
       await logout();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Logout error:", err);
+      // Consider showing a user-friendly notification
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
     }
   };
 

@@ -13,7 +13,7 @@ interface ProjectTestimonialProps {
 
 export default function ProjectTestimonial({ quote, author, className }: ProjectTestimonialProps) {
   return (
-    <div className={cn("border border-border rounded-xl p-6", className)}>
+    <section className={cn("border border-border rounded-xl p-6", className)}>
       <div className="flex items-start mb-4">
         <Quote className="text-primary h-8 w-8 mr-2 flex-shrink-0" />
         <p className="text-lg italic text-muted-foreground">{quote}</p>
@@ -38,6 +38,6 @@ export default function ProjectTestimonial({ quote, author, className }: Project
           <div className="text-sm text-muted-foreground">{author.role}</div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

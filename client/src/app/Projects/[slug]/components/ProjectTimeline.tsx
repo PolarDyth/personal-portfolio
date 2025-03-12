@@ -29,13 +29,13 @@ interface ProjectTimelineProps {
 
 export default function ProjectTimeline({ items, className }: ProjectTimelineProps) {
   return (
-    <div className={cn("text-left border border-border rounded-xl p-6", className)}>
+    <section className={cn("text-left border border-border rounded-xl p-6", className)}>
       <h3 className="text-xl font-bold mb-6">Development Timeline</h3>
       <div className="space-y-2">
         {items.map((item, index) => (
           <TimelineItem key={index} {...item} />
         ))}
       </div>
-    </div>
+    </section>
   )
 }

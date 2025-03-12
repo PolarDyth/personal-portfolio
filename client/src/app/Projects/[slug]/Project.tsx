@@ -49,15 +49,15 @@ export default function ProjectPage() {
       <ProjectGallery images={projects.data.images} />
       <ProjectStats stats={projects.data.stats} />
 
-      <div className="mb-16 text-left">
+      <section className="mb-16 text-left">
         <h2 className="text-3xl font-bold mb-6">Project Overview</h2>
         <div className="prose prose-lg dark:prose-invert max-w-none">
           <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
             {projects.data.overview}
           </p>
         </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+      </section>
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
         <div className="lg:col-span-2">
           <ProjectTimeline items={projects.data.timeline} />
         </div>
@@ -67,8 +67,8 @@ export default function ProjectPage() {
             author={projects.data.testimonial.author}
           />
         </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+      </section>
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
         <div className="lg:col-span-2">
           <div className="text-left border border-border rounded-xl p-6">
             <h2 className="text-xl font-bold mb-12">Development Process</h2>
@@ -82,10 +82,10 @@ export default function ProjectPage() {
         <div>
           <ProjectInsights insights={projects.data.insights} />
         </div>
-      </div>
+      </section>
 
       {/* Features, Challenges, Learnings */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
         <ProjectFeatureCard
           title="Key Features"
           items={projects.data.features}
@@ -101,8 +101,8 @@ export default function ProjectPage() {
           items={projects.data.learnings}
           icon={<Lightbulb className="h-5 w-5 text-primary" />}
         />
-      </div>
-      <div className="border border-border rounded-xl p-8 mb-16 w-full text-center">
+      </section>
+      <section className="border border-border rounded-xl p-8 mb-16 w-full text-center">
           <h2 className="text-2xl font-bold mb-4">
             Interested in working together?
           </h2>
@@ -118,7 +118,7 @@ export default function ProjectPage() {
               <a href="/projects">View More Projects</a>
             </Button>
           </div>
-        </div>
+        </section>
       
       <Footer />
     </div>

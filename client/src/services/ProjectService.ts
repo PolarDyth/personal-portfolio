@@ -68,17 +68,25 @@ export const projectService = {
   },
 
   async createProject(project: Project): Promise<Project> {
-    const res = await axios.post(API_URL, project);
+    const res = await axios.post(API_URL, {
+      project,
+      withCredentials: true,
+    });
     return res.data;
   },
 
   async updateProject(project: Project): Promise<Project> {
-    const res = await axios.put(`${API_URL}/${project.slug}`, project);
+    const res = await axios.put(`${API_URL}/${project.slug}`, {
+      project,
+      withCredentials: true,
+    })
     return res.data;
   },
 
-  async deleteProject(slug: string): Promise<void> {
-    await axios.delete(`${API_URL}/${slug}`);
+  async deleteProject(id: number): Promise<void> {
+    await axios.delete(`${API_URL}/${id}`, {
+      withCredentials: true,
+    })
   }
 };
 

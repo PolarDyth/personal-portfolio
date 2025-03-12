@@ -19,6 +19,10 @@ export function useAuth() {
       const response = await axios.get(`${API_URL}/auth/me`, { 
         withCredentials: true 
       });
+
+      if (response.status === 403) {
+        
+      }
       
       if (response.status === 200) {
         setIsLoggedIn(true);

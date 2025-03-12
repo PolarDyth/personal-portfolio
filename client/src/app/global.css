@@ -200,6 +200,10 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Inter", sans-serif;
+  }
+
+  nav, footer, header, section {
+    
     max-width: 1536px;
     margin: auto;
   }
