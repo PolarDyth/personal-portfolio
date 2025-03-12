@@ -22,42 +22,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Check if user is authenticated - improve error handling and logging
   const checkAuth = useCallback(async () => {
     if (isCheckingAuth) {
-      console.log("Auth check already in progress, skipping");
       return;
     }
     
-    console.log("Starting auth check");
     try {
       setIsCheckingAuth(true);
       setLoading(true);
       
       const userData = await authService.getMe();
-      console.log("Auth check successful, user data received:", userData);
       
       setUser(userData);
       setIsAuthenticated(true);
-    } catch (error) {
-      console.error("Auth check failed:", error);
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
     } finally {
       setLoading(false);
       setIsCheckingAuth(false);
-      console.log("Auth check complete, isAuthenticated:", isAuthenticated);
     }
   }, [isCheckingAuth]);
 
   // Run auth check on mount
   useEffect(() => {
-    console.log("AuthProvider mounted, checking auth...");
     checkAuth();
   }, []);
 
   const login = async (username: string, password: string): Promise<void> => {
-    console.log("Login attempt for user:", username);
     try {
       await authService.login(username, password);
-      console.log("Login API call successful");
       await checkAuth(); // Re-check auth status after login
     } catch (error) {
       console.error("Login failed:", error);
@@ -66,14 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    console.log("Logout initiated");
     try {
       await authService.logout();
-      console.log("Logout successful");
       setUser(null);
       setIsAuthenticated(false);
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch {
       // Still clear local auth state even if API call fails
       setUser(null);
       setIsAuthenticated(false);

@@ -33,7 +33,7 @@ api.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh") &&
       !originalRequest.url?.includes("/auth/login") &&
-      !originalRequest.url.includes("/auth/me")
+      !originalRequest.url?.includes("/auth/me")
     ) {
       originalRequest._retry = true;
       console.log("401 error detected, attempting token refresh");
@@ -69,6 +69,21 @@ api.interceptors.response.use(
       }
     }
     throw error;
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    // Don't log auth-related errors
+    if (error.config.url.includes('/auth/')) {
+      // Create a modified error without the status code
+      const sanitizedError = new Error('Authentication error');
+      return Promise.reject(sanitizedError);
+    }
+    
+    // Pass through other errors
+    return Promise.reject(error);
   }
 );
 
